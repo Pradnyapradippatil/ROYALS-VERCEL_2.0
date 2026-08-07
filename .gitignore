@@ -1,0 +1,17 @@
+node_modules/
+.env
+.env.*
+!.env.example
+
+*.crdownload
+.DS_Store
+Thumbs.db
+
+/tests/
+/scripts/
+
+/netlify/
+netlify.toml
+
+package.json
+package-lock.json

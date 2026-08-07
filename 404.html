@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+
+<html lang="en-IN">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<meta content="noindex, follow" name="robots"/>
+<title>Page Not Found | Royals Webtech</title>
+<link href="assets/img/logo/favicon-rwt.ico" rel="icon" type="image/x-icon"/>
+<style>
+        * { box-sizing: border-box; }
+        body { margin: 0; min-height: 100vh; display: grid; place-items: center; padding: 24px; background: #0b0b0b; color: #fff; font-family: Arial, sans-serif; text-align: center; }
+        main { max-width: 620px; }
+        img { width: 190px; max-width: 60vw; height: auto; margin-bottom: 28px; }
+        h1 { margin: 0 0 14px; font-size: clamp(42px, 9vw, 88px); }
+        p { margin: 0 0 26px; color: #c9c9c9; font-size: 18px; line-height: 1.6; }
+        a { display: inline-block; padding: 13px 24px; border-radius: 6px; background: #d71920; color: #fff; text-decoration: none; font-weight: 700; }
+    </style>
+<link href="assets/css/royals-ai-chatbot.css" rel="stylesheet"/></head>
+<body>
+<main>
+<img alt="Royals Webtech logo" height="100" src="assets/img/logo/rwtlogo.png" width="320"/>
+<h1>404</h1>
+<p>The page you are looking for does not exist or may have been moved.</p>
+<a href="/">Return to Home</a>
+</main>
+<div class="rwt-ai-chat" id="rwtAiChat">
+<button aria-controls="rwtAiPanel" aria-expanded="false" aria-label="Open Royals AI Assistant" class="rwt-ai-launcher" id="rwtAiLauncher" type="button">
+<span aria-hidden="true" class="rwt-ai-bot">
+<span class="rwt-ai-antenna">
+<span></span>
+</span>
+<span class="rwt-ai-face">
+<span class="rwt-ai-eye"></span>
+<span class="rwt-ai-eye"></span>
+<span class="rwt-ai-mouth"></span>
+</span>
+</span>
+<span class="rwt-ai-launcher-text">
+<strong>Ask Royals AI</strong>
+<small>
+<span class="rwt-ai-online-dot"></span>
+                        Online now
+                    </small>
+</span>
+</button>
+<section aria-hidden="true" aria-label="Royals AI Assistant" class="rwt-ai-panel" id="rwtAiPanel">
+<header class="rwt-ai-header">
+<div class="rwt-ai-header-avatar">
+<span class="rwt-ai-mini-face">
+<span></span>
+<span></span>
+</span>
+</div>
+<div class="rwt-ai-header-text">
+<h3>Royals AI Assistant</h3>
+<p>
+<span class="rwt-ai-online-dot"></span>
+                            Ready to help
+                        </p>
+</div>
+<div class="rwt-ai-header-actions">
+<button aria-label="Reset conversation" id="rwtAiReset" title="Reset conversation" type="button">
+                            ↻
+                        </button>
+<button aria-label="Close chatbot" id="rwtAiClose" title="Close chatbot" type="button">
+                            ×
+                        </button>
+</div>
+</header>
+<div aria-live="polite" class="rwt-ai-messages" id="rwtAiMessages">
+<article class="rwt-ai-message rwt-ai-message-bot">
+<div class="rwt-ai-message-avatar">
+                            AI
+                        </div>
+<div class="rwt-ai-message-content">
+<div class="rwt-ai-message-bubble">
+                                Hello! I am the Royals Webtech AI assistant.
+                                How can I help you today?
+                            </div>
+<span class="rwt-ai-message-time">
+                                Now
+                            </span>
+</div>
+</article>
+<div class="rwt-ai-suggestions" id="rwtAiSuggestions">
+<button data-question="What services does Royals Webtech provide?" type="button">
+                            Our Services
+                        </button>
+<button data-question="I want to discuss a new website or software project." type="button">
+                            Start a Project
+                        </button>
+<button data-question="Which technologies does Royals Webtech work with?" type="button">
+                            Technologies
+                        </button>
+<button data-question="Are there any career or internship opportunities?" type="button">
+                            Careers
+                        </button>
+</div>
+</div>
+<div aria-live="polite" class="rwt-ai-status" id="rwtAiStatus" role="status"></div>
+<form class="rwt-ai-form" id="rwtAiForm">
+<label class="rwt-screen-reader" for="rwtAiInput">
+                        Enter your message
+                    </label>
+<textarea autocomplete="off" id="rwtAiInput" maxlength="1000" placeholder="Type your message..." rows="1"></textarea>
+<button aria-label="Send message" id="rwtAiSend" type="submit">
+<span>Send</span>
+<span aria-hidden="true">→</span>
+</button>
+</form>
+<footer class="rwt-ai-footer">
+                    AI-powered support
+                </footer>
+</section>
+</div><script src="assets/js/site-config.js"></script>
+<script src="assets/js/royals-ai-chatbot.js"></script></body>
+</html>
