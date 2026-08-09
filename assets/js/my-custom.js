@@ -1444,3 +1444,593 @@ document.addEventListener("DOMContentLoaded", function () {
         restartHeroTimer(swiper);
     }, true);
 })();
+ 
+
+/* =========================================================
+   RWT VERIFIED TESTIMONIAL CAROUSEL
+   Stable Center + Autoplay + Hover Pause
+========================================================= */
+
+(function () {
+    "use strict";
+
+    function initializeRwtTestimonials() {
+        var section =
+            document.getElementById(
+                "rwtTestimonials"
+            );
+
+        if (
+            !section ||
+            section.dataset.rwtCarouselReady ===
+                "true"
+        ) {
+            return;
+        }
+
+        section.dataset.rwtCarouselReady =
+            "true";
+
+        var viewport =
+            document.getElementById(
+                "rwtTestimonialViewport"
+            );
+
+        var track =
+            document.getElementById(
+                "rwtTestimonialTrack"
+            );
+
+        var previousButton =
+            document.getElementById(
+                "rwtTestimonialPrev"
+            );
+
+        var nextButton =
+            document.getElementById(
+                "rwtTestimonialNext"
+            );
+
+        var dotsContainer =
+            document.getElementById(
+                "rwtTestimonialDots"
+            );
+
+        var sliderStatus =
+            document.getElementById(
+                "rwtTestimonialStatus"
+            );
+
+        if (
+            !viewport ||
+            !track ||
+            !previousButton ||
+            !nextButton ||
+            !dotsContainer
+        ) {
+            return;
+        }
+
+        var slides =
+            Array.from(
+                track.querySelectorAll(
+                    ".rwt-testimonial-slide"
+                )
+            );
+
+        if (!slides.length) {
+            return;
+        }
+
+        var hoverArea =
+            section.querySelector(
+                ".rwt-testimonial-stage"
+            ) || viewport;
+
+        var dots = [];
+
+        var currentIndex =
+            slides.length > 2
+                ? 1
+                : 0;
+
+        var autoplayTimer = null;
+        var autoplayDelay = 3500;
+
+        var isPointerInside = false;
+        var isTouching = false;
+
+        var touchStartX = 0;
+        var touchStartY = 0;
+
+
+        function getTrackGap() {
+            var trackStyle =
+                window.getComputedStyle(track);
+
+            return (
+                parseFloat(
+                    trackStyle.columnGap ||
+                    trackStyle.gap
+                ) || 0
+            );
+        }
+
+
+        function updateSliderPosition() {
+            if (!slides.length) {
+                return;
+            }
+
+            currentIndex =
+                Math.min(
+                    Math.max(currentIndex, 0),
+                    slides.length - 1
+                );
+
+            /*
+             * offsetWidth transform/scale se
+             * affect nahi hota.
+             */
+            var slideWidth =
+                slides[0].offsetWidth;
+
+            var viewportWidth =
+                viewport.clientWidth;
+
+            var gap =
+                getTrackGap();
+
+            if (
+                !slideWidth ||
+                !viewportWidth
+            ) {
+                return;
+            }
+
+            var offset =
+                (viewportWidth - slideWidth) / 2 -
+                currentIndex *
+                    (slideWidth + gap);
+
+            track.style.transform =
+                "translate3d(" +
+                Math.round(offset) +
+                "px, 0, 0)";
+
+            slides.forEach(
+                function (slide, index) {
+                    var isActive =
+                        index === currentIndex;
+
+                    slide.classList.toggle(
+                        "is-active",
+                        isActive
+                    );
+
+                    slide.setAttribute(
+                        "aria-hidden",
+                        String(!isActive)
+                    );
+                }
+            );
+
+            dots.forEach(
+                function (dot, index) {
+                    var isActive =
+                        index === currentIndex;
+
+                    dot.classList.toggle(
+                        "is-active",
+                        isActive
+                    );
+
+                    dot.setAttribute(
+                        "aria-current",
+                        isActive
+                            ? "true"
+                            : "false"
+                    );
+                }
+            );
+
+            if (sliderStatus) {
+                sliderStatus.textContent =
+                    "Showing review " +
+                    (currentIndex + 1) +
+                    " of " +
+                    slides.length;
+            }
+
+            var hasMultipleReviews =
+                slides.length > 1;
+
+            previousButton.hidden =
+                !hasMultipleReviews;
+
+            nextButton.hidden =
+                !hasMultipleReviews;
+
+            dotsContainer.hidden =
+                !hasMultipleReviews;
+        }
+
+
+        function goToReview(index) {
+            currentIndex =
+                (
+                    index +
+                    slides.length
+                ) % slides.length;
+
+            updateSliderPosition();
+        }
+
+
+        function stopAutoplay() {
+            if (!autoplayTimer) {
+                return;
+            }
+
+            window.clearTimeout(
+                autoplayTimer
+            );
+
+            autoplayTimer = null;
+        }
+
+
+        function autoplayCanRun() {
+            return (
+                slides.length > 1 &&
+                !document.hidden &&
+                !isPointerInside &&
+                !isTouching
+            );
+        }
+
+
+        function startAutoplay() {
+            stopAutoplay();
+
+            if (!autoplayCanRun()) {
+                return;
+            }
+
+            autoplayTimer =
+                window.setTimeout(
+                    function () {
+                        goToReview(
+                            currentIndex + 1
+                        );
+
+                        startAutoplay();
+                    },
+                    autoplayDelay
+                );
+        }
+
+
+        function restartAutoplay() {
+            stopAutoplay();
+            startAutoplay();
+        }
+
+
+        function createDots() {
+            dotsContainer.replaceChildren();
+
+            dots =
+                slides.map(
+                    function (_, index) {
+                        var dot =
+                            document.createElement(
+                                "button"
+                            );
+
+                        dot.type = "button";
+
+                        dot.className =
+                            "rwt-testimonial-dot";
+
+                        dot.setAttribute(
+                            "aria-label",
+                            "Show review " +
+                            (index + 1)
+                        );
+
+                        dot.addEventListener(
+                            "click",
+                            function () {
+                                goToReview(index);
+                                restartAutoplay();
+                            }
+                        );
+
+                        dotsContainer.appendChild(
+                            dot
+                        );
+
+                        return dot;
+                    }
+                );
+        }
+
+
+        previousButton.addEventListener(
+            "click",
+            function () {
+                goToReview(
+                    currentIndex - 1
+                );
+
+                restartAutoplay();
+            }
+        );
+
+
+        nextButton.addEventListener(
+            "click",
+            function () {
+                goToReview(
+                    currentIndex + 1
+                );
+
+                restartAutoplay();
+            }
+        );
+
+
+        /*
+         * Desktop mouse hover pause
+         */
+        hoverArea.addEventListener(
+            "pointerenter",
+            function (event) {
+                if (
+                    event.pointerType &&
+                    event.pointerType !== "mouse"
+                ) {
+                    return;
+                }
+
+                isPointerInside = true;
+                stopAutoplay();
+            }
+        );
+
+
+        hoverArea.addEventListener(
+            "pointerleave",
+            function (event) {
+                if (
+                    event.pointerType &&
+                    event.pointerType !== "mouse"
+                ) {
+                    return;
+                }
+
+                isPointerInside = false;
+                startAutoplay();
+            }
+        );
+
+
+        /*
+         * Keyboard arrows
+         */
+        viewport.addEventListener(
+            "keydown",
+            function (event) {
+                if (event.key === "ArrowLeft") {
+                    event.preventDefault();
+
+                    goToReview(
+                        currentIndex - 1
+                    );
+
+                    restartAutoplay();
+                }
+
+                if (
+                    event.key === "ArrowRight"
+                ) {
+                    event.preventDefault();
+
+                    goToReview(
+                        currentIndex + 1
+                    );
+
+                    restartAutoplay();
+                }
+            }
+        );
+
+
+        /*
+         * Mobile swipe start
+         */
+        viewport.addEventListener(
+            "touchstart",
+            function (event) {
+                if (!event.touches.length) {
+                    return;
+                }
+
+                isTouching = true;
+                stopAutoplay();
+
+                touchStartX =
+                    event.touches[0].clientX;
+
+                touchStartY =
+                    event.touches[0].clientY;
+            },
+            {
+                passive: true
+            }
+        );
+
+
+        /*
+         * Mobile swipe end
+         */
+        viewport.addEventListener(
+            "touchend",
+            function (event) {
+                if (
+                    !event.changedTouches.length
+                ) {
+                    isTouching = false;
+                    startAutoplay();
+                    return;
+                }
+
+                var horizontalDistance =
+                    event.changedTouches[0]
+                        .clientX -
+                    touchStartX;
+
+                var verticalDistance =
+                    event.changedTouches[0]
+                        .clientY -
+                    touchStartY;
+
+                var horizontalSwipe =
+                    Math.abs(
+                        horizontalDistance
+                    ) > 45 &&
+                    Math.abs(
+                        horizontalDistance
+                    ) >
+                    Math.abs(
+                        verticalDistance
+                    );
+
+                if (horizontalSwipe) {
+                    if (
+                        horizontalDistance < 0
+                    ) {
+                        goToReview(
+                            currentIndex + 1
+                        );
+                    } else {
+                        goToReview(
+                            currentIndex - 1
+                        );
+                    }
+                }
+
+                isTouching = false;
+                restartAutoplay();
+            },
+            {
+                passive: true
+            }
+        );
+
+
+        viewport.addEventListener(
+            "touchcancel",
+            function () {
+                isTouching = false;
+                startAutoplay();
+            },
+            {
+                passive: true
+            }
+        );
+
+
+        /*
+         * Background tab safety
+         */
+        document.addEventListener(
+            "visibilitychange",
+            function () {
+                if (document.hidden) {
+                    stopAutoplay();
+                } else {
+                    startAutoplay();
+                }
+            }
+        );
+
+
+        /*
+         * Initial setup
+         */
+        createDots();
+
+        window.requestAnimationFrame(
+            function () {
+                updateSliderPosition();
+                startAutoplay();
+            }
+        );
+
+
+        /*
+         * Responsive alignment
+         */
+        if (
+            "ResizeObserver" in window
+        ) {
+            var resizeObserver =
+                new ResizeObserver(
+                    updateSliderPosition
+                );
+
+            resizeObserver.observe(
+                viewport
+            );
+        } else {
+            window.addEventListener(
+                "resize",
+                updateSliderPosition
+            );
+        }
+
+
+        window.addEventListener(
+            "load",
+            function () {
+                updateSliderPosition();
+                restartAutoplay();
+            }
+        );
+
+
+        window.addEventListener(
+            "pageshow",
+            function () {
+                updateSliderPosition();
+                restartAutoplay();
+            }
+        );
+
+
+        window.addEventListener(
+            "pagehide",
+            stopAutoplay
+        );
+    }
+
+
+    if (
+        document.readyState === "loading"
+    ) {
+        document.addEventListener(
+            "DOMContentLoaded",
+            initializeRwtTestimonials
+        );
+    } else {
+        initializeRwtTestimonials();
+    }
+
+
+    document.addEventListener(
+        "dsnAjaxComplete",
+        initializeRwtTestimonials
+    );
+})();
