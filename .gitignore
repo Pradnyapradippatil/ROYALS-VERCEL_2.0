@@ -15,3 +15,10 @@ netlify.toml
 
 package.json
 package-lock.json
+
+ROYALS-BACKEND/venv/
+ROYALS-BACKEND/.env
+ROYALS-BACKEND/__pycache__/
+*.pyc
+
+ROYALS-BACKEND/uploads/resumes/
