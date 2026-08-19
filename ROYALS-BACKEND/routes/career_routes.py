@@ -1,5 +1,6 @@
+from fileinput import filename
 import os
-
+from utils.supabase_storage import supabase, BUCKET_NAME
 from flask import Blueprint, request, jsonify, current_app
 
 from database.connection import get_db_connection
@@ -166,22 +167,25 @@ def career_apply():
         )
 
         # ==========================================
-        # RESUME PATH
+        # UPLOAD RESUME TO SUPABASE STORAGE
         # ==========================================
 
-        resume_path = os.path.join(
-            current_app.config["UPLOAD_FOLDER"],
-            filename
+        resume_data = resume.read()
+
+        storage_path = filename
+
+        supabase.storage.from_(BUCKET_NAME).upload(
+            path=storage_path,
+            file=resume_data,
+            file_options={
+                "content-type": resume.content_type or "application/octet-stream",
+                "upsert": "false"
+            }
         )
+        resume_path = storage_path
+        print("Resume uploaded to Supabase:", storage_path)
 
-        # ==========================================
-        # SAVE RESUME
-        # ==========================================
-
-        resume.save(resume_path)
-
-        print("Resume saved:", resume_path)
-
+       
         # ==========================================
         # PROFESSIONAL INFORMATION
         # ==========================================
@@ -313,7 +317,9 @@ def career_apply():
 
     except Exception as e:
 
+        import traceback
         print("CAREER ERROR:", e)
+        traceback.print_exc()
 
         if conn:
             conn.rollback()

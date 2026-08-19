@@ -1,7 +1,7 @@
 import os
 
 from flask_mail import Message
-
+from utils.supabase_storage import supabase, BUCKET_NAME
 
 def send_contact_emails(mail, name, email, phone, company, service, message, source_page):
     # ==========================================
@@ -182,11 +182,16 @@ RESUME
 """
 
     # ==========================================
-    # ATTACH RESUME
+    # DOWNLOAD RESUME FROM SUPABASE
     # ==========================================
 
-    with open(resume_path, "rb") as resume_file:
-        resume_data = resume_file.read()
+    resume_data = supabase.storage.from_(BUCKET_NAME).download(
+        resume_path
+    )
+
+    # ==========================================
+    # ATTACH RESUME TO HR EMAIL
+    # ==========================================
 
     hr_msg.attach(
         filename=filename,
