@@ -190,20 +190,24 @@ RESUME
     # DOWNLOAD RESUME FROM SUPABASE
     # ==========================================
 
+    print("CAREER EMAIL: Downloading resume from Supabase...")
+
     resume_data = supabase.storage.from_(BUCKET_NAME).download(
         resume_path
     )
 
+    print("CAREER EMAIL: Resume downloaded successfully.")
+
     # ==========================================
     # ATTACH RESUME TO HR EMAIL
     # ==========================================
-
+    print("CAREER EMAIL: Attaching resume...")
     hr_msg.attach(
         filename=filename,
         content_type=resume_content_type or "application/octet-stream",
         data=resume_data
     )
-
+    print("CAREER EMAIL: Resume attached successfully.")
     # ==========================================
     # SEND EMAILS
     # ==========================================
