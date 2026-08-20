@@ -1,5 +1,6 @@
 from fileinput import filename
 import os
+import traceback
 from utils.supabase_storage import supabase, BUCKET_NAME
 from flask import Blueprint, request, jsonify, current_app
 
@@ -279,32 +280,40 @@ def career_apply():
         # SEND EMAILS
         # ==========================================
 
-        send_career_emails(
-            current_app.extensions["mail"],
-            name,
-            email,
-            phone,
-            location,
-            position,
-            application_type,
-            college,
-            degree,
-            branch,
-            semester,
-            internship_skills,
-            experience,
-            current_company,
-            expected_ctc,
-            notice_period,
-            job_skills,
-            linkedin,
-            github,
-            portfolio,
-            cover_message,
-            filename,
-            resume_path,
-            resume.content_type
-        )
+        try:
+            send_career_emails(
+                current_app.extensions["mail"],
+                name,
+                email,
+                phone,
+                location,
+                position,
+                application_type,
+                college,
+                degree,
+                branch,
+                semester,
+                internship_skills,
+                experience,
+                current_company,
+                expected_ctc,
+                notice_period,
+                job_skills,
+                linkedin,
+                github,
+                portfolio,
+                cover_message,
+                filename,
+                resume_path,
+                resume.content_type
+            )
+
+            print("Career emails sent successfully.")
+
+        except Exception as email_error:
+            import traceback
+            print("CAREER EMAIL ERROR:", email_error)
+            traceback.print_exc()
 
         # ==========================================
         # SUCCESS RESPONSE
@@ -314,6 +323,7 @@ def career_apply():
             "success": True,
             "message": "Your application has been submitted successfully."
         }), 200
+
 
     except Exception as e:
 
@@ -329,6 +339,7 @@ def career_apply():
             "message": "Unable to submit your application.",
             "error": str(e)
         }), 500
+
 
     finally:
 
