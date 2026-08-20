@@ -36,4 +36,8 @@ def configure_app(app):
     )
 
     app.config["MAIL_USERNAME"] = os.getenv("MAIL_USERNAME")
-    app.config["MAIL_PASSWORD"] = os.getenv("MAIL_PASSWORD")
+    app.config["MAIL_PASSWORD"] = os.getenv("MAIL_PASSWORD") 
+    # SMTP connection timeout
+    app.config["MAIL_TIMEOUT"] = int(
+        os.getenv("MAIL_TIMEOUT", 10)
+    )
