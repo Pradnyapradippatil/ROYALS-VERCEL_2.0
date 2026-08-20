@@ -57,8 +57,13 @@ Source:
     # SEND
     # ==========================================
 
+    print("EMAIL: Sending user email...")
     mail.send(user_msg)
+    print("EMAIL: User email sent successfully.")
+
+    print("EMAIL: Sending HR email...")
     mail.send(hr_msg)
+    print("EMAIL: HR email sent successfully.")
 
 
 def send_career_emails(
@@ -203,5 +208,10 @@ RESUME
     # SEND EMAILS
     # ==========================================
 
+    print("CAREER EMAIL: Sending applicant email...")
     mail.send(user_msg)
+    print("CAREER EMAIL: Applicant email sent successfully.")
+
+    print("CAREER EMAIL: Sending HR email...")
     mail.send(hr_msg)
+    print("CAREER EMAIL: HR email sent successfully.")
