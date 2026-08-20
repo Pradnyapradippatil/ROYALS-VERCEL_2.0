@@ -5,7 +5,7 @@
     const existingEndpoints = existingConfig.endpoints || {};
 
     const config = {
-        apiBaseUrl: String(existingConfig.apiBaseUrl || "https://royals-backend.onrender.com").trim(),
+        apiBaseUrl: String(existingConfig.apiBaseUrl || "http://127.0.0.1:5000").trim(),
         endpoints: {
             contact: existingEndpoints.contact || "/api/contact",
             career: existingEndpoints.career || "/api/career/apply",
