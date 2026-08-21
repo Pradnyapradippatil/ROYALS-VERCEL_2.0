@@ -71,10 +71,9 @@ def contact():
         # SEND EMAILS
         # ==========================================
 
-        from flask import current_app
+       
 
         send_contact_emails(
-            current_app.extensions["mail"],
             name,
             email,
             phone,

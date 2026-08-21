@@ -1,20 +1,30 @@
 import os
 
-from flask_mail import Message
 from utils.supabase_storage import supabase, BUCKET_NAME
+from gmail_service import send_email
 
-def send_contact_emails(mail, name, email, phone, company, service, message, source_page):
-    # ==========================================
+
+# ============================================================
+# CONTACT FORM EMAILS
+# ============================================================
+
+def send_contact_emails(
+    name,
+    email,
+    phone,
+    company,
+    service,
+    message,
+    source_page
+):
+
+    # --------------------------------------------------------
     # USER EMAIL
-    # ==========================================
+    # --------------------------------------------------------
 
-    user_msg = Message(
-        subject="Thank you for contacting Royals Webtech",
-        sender=os.getenv("MAIL_USERNAME"),
-        recipients=[email]
-    )
+    user_subject = "Thank you for contacting Royals Webtech"
 
-    user_msg.body = f"""
+    user_body = f"""
 Hello {name},
 
 Thank you for contacting Royals Webtech.
@@ -27,17 +37,24 @@ Regards,
 Royals Webtech Team
 """
 
-    # ==========================================
-    # HR EMAIL
-    # ==========================================
+    print("CONTACT EMAIL: Sending user email...")
 
-    hr_msg = Message(
-        subject=f"New Website Enquiry - {service}",
-        sender=os.getenv("MAIL_USERNAME"),
-        recipients=[os.getenv("HR_EMAIL")]
+    send_email(
+        recipient=email,
+        subject=user_subject,
+        body=user_body
     )
 
-    hr_msg.body = f"""
+    print("CONTACT EMAIL: User email sent successfully.")
+
+
+    # --------------------------------------------------------
+    # HR EMAIL
+    # --------------------------------------------------------
+
+    hr_subject = f"New Website Enquiry - {service}"
+
+    hr_body = f"""
 A new enquiry has been submitted from the website.
 
 Name      : {name}
@@ -53,21 +70,22 @@ Source:
 {source_page}
 """
 
-    # ==========================================
-    # SEND
-    # ==========================================
+    print("CONTACT EMAIL: Sending HR email...")
 
-    print("EMAIL: Sending user email...")
-    mail.send(user_msg)
-    print("EMAIL: User email sent successfully.")
+    send_email(
+        recipient=os.getenv("HR_EMAIL"),
+        subject=hr_subject,
+        body=hr_body
+    )
 
-    print("EMAIL: Sending HR email...")
-    mail.send(hr_msg)
-    print("EMAIL: HR email sent successfully.")
+    print("CONTACT EMAIL: HR email sent successfully.")
 
+
+# ============================================================
+# CAREER FORM EMAILS
+# ============================================================
 
 def send_career_emails(
-    mail,
     name,
     email,
     phone,
@@ -92,17 +110,14 @@ def send_career_emails(
     resume_path,
     resume_content_type
 ):
-    # ==========================================
+
+    # --------------------------------------------------------
     # APPLICANT EMAIL
-    # ==========================================
+    # --------------------------------------------------------
 
-    user_msg = Message(
-        subject="Application Received - Royals Webtech",
-        sender=os.getenv("MAIL_USERNAME"),
-        recipients=[email]
-    )
+    user_subject = "Application Received - Royals Webtech"
 
-    user_msg.body = f"""
+    user_body = f"""
 Hello {name},
 
 Thank you for applying to Royals Webtech.
@@ -121,17 +136,37 @@ Regards,
 Royals Webtech Team
 """
 
-    # ==========================================
-    # HR EMAIL
-    # ==========================================
+    print("CAREER EMAIL: Sending applicant email...")
 
-    hr_msg = Message(
-        subject=f"New Career Application - {position}",
-        sender=os.getenv("MAIL_USERNAME"),
-        recipients=[os.getenv("HR_EMAIL")]
+    send_email(
+        recipient=email,
+        subject=user_subject,
+        body=user_body
     )
 
-    hr_msg.body = f"""
+    print("CAREER EMAIL: Applicant email sent successfully.")
+
+
+    # --------------------------------------------------------
+    # DOWNLOAD RESUME FROM SUPABASE
+    # --------------------------------------------------------
+
+    print("CAREER EMAIL: Downloading resume from Supabase...")
+
+    resume_data = supabase.storage.from_(BUCKET_NAME).download(
+        resume_path
+    )
+
+    print("CAREER EMAIL: Resume downloaded successfully.")
+
+
+    # --------------------------------------------------------
+    # HR EMAIL
+    # --------------------------------------------------------
+
+    hr_subject = f"New Career Application - {position}"
+
+    hr_body = f"""
 A new career application has been submitted
 from the Royals Webtech website.
 
@@ -186,36 +221,15 @@ RESUME
 {filename}
 """
 
-    # ==========================================
-    # DOWNLOAD RESUME FROM SUPABASE
-    # ==========================================
+    print("CAREER EMAIL: Sending HR email with resume...")
 
-    print("CAREER EMAIL: Downloading resume from Supabase...")
-
-    resume_data = supabase.storage.from_(BUCKET_NAME).download(
-        resume_path
+    send_email(
+        recipient=os.getenv("HR_EMAIL"),
+        subject=hr_subject,
+        body=hr_body,
+        attachment_data=resume_data,
+        attachment_filename=filename,
+        attachment_content_type=resume_content_type
     )
 
-    print("CAREER EMAIL: Resume downloaded successfully.")
-
-    # ==========================================
-    # ATTACH RESUME TO HR EMAIL
-    # ==========================================
-    print("CAREER EMAIL: Attaching resume...")
-    hr_msg.attach(
-        filename=filename,
-        content_type=resume_content_type or "application/octet-stream",
-        data=resume_data
-    )
-    print("CAREER EMAIL: Resume attached successfully.")
-    # ==========================================
-    # SEND EMAILS
-    # ==========================================
-
-    print("CAREER EMAIL: Sending applicant email...")
-    mail.send(user_msg)
-    print("CAREER EMAIL: Applicant email sent successfully.")
-
-    print("CAREER EMAIL: Sending HR email...")
-    mail.send(hr_msg)
     print("CAREER EMAIL: HR email sent successfully.")

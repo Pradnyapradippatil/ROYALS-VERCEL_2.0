@@ -1,6 +1,6 @@
 from flask import Flask
 from flask_cors import CORS
-from flask_mail import Mail
+
 from dotenv import load_dotenv
 
 from config.config import configure_app
@@ -38,11 +38,6 @@ configure_app(app)
 CORS(app)
 
 
-# ==========================================
-# MAIL
-# ==========================================
-
-mail = Mail(app)
 
 
 # ==========================================

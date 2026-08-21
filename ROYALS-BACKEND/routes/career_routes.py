@@ -282,7 +282,6 @@ def career_apply():
 
         try:
             send_career_emails(
-                current_app.extensions["mail"],
                 name,
                 email,
                 phone,
