@@ -10,9 +10,14 @@ SCOPES = ["https://www.googleapis.com/auth/gmail.send"]
 
 
 def get_gmail_service():
-    credentials = Credentials.from_authorized_user_file(
-        "token.json",
-        SCOPES
+
+    credentials = Credentials(
+        token=None,
+        refresh_token=os.getenv("GMAIL_REFRESH_TOKEN"),
+        token_uri="https://oauth2.googleapis.com/token",
+        client_id=os.getenv("GMAIL_CLIENT_ID"),
+        client_secret=os.getenv("GMAIL_CLIENT_SECRET"),
+        scopes=SCOPES
     )
 
     return build(
@@ -30,6 +35,7 @@ def send_email(
     attachment_filename=None,
     attachment_content_type=None
 ):
+
     service = get_gmail_service()
 
     message = EmailMessage()
@@ -40,7 +46,6 @@ def send_email(
 
     message.set_content(body)
 
-    # Add attachment if provided
     if attachment_data is not None and attachment_filename:
 
         content_type = (
