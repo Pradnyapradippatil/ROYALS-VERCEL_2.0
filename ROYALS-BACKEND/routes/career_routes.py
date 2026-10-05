@@ -30,9 +30,7 @@ def career_apply():
         # GET FORM DATA
         # ==========================================
 
-        print("========== CAREER FORM DATA ==========")
-        print(request.form)
-        print("======================================")
+        print("========== CAREER FORM RECEIVED ==========")
 
         name = request.form.get("name")
         email = request.form.get("email")
