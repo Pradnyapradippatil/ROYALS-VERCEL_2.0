@@ -40,7 +40,7 @@ def send_email(
 
     message = EmailMessage()
 
-    message["From"] = os.getenv("GMAIL_SENDER")
+    message["From"] = f"Royals Webtech <{os.getenv('GMAIL_SENDER')}>"
     message["To"] = recipient
     message["Subject"] = subject
 
